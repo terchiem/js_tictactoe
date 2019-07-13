@@ -2,13 +2,63 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Javascript Tic-Tac-Toe</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-    <script src="https://use.fontawesome.com/729dceb01f.js"></script>
   </head>
 
   <body>
-    
+    <header>
+      <button class="form-open">New Game</button>
+      <button class="head-restart">Restart</button>
+      <h1>Javascript Tic-Tac-Toe</h1>
+    </header>
+
+    <div class="overlay">
+      <div class="game-form">
+        <button class="form-close">x</button>
+        <div class="fields">
+          <h3>New Game</h3>
+          <input type="text" name="player1" value="Player 1">
+          <input type="text" name="player2" value="Player 2">
+          <button class="start-button">Start Game</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay">
+      <div class="results">
+        <button class="result-close">x</button>
+        <h2 class="result-message">Player 1 is the winner!</h2>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="cell"><div class="mark" data-index="0"></div></div>
+      <div class="cell"><div class="mark" data-index="1"></div></div>
+      <div class="cell"><div class="mark" data-index="2"></div></div>
+      <div class="cell"><div class="mark" data-index="3"></div></div>
+      <div class="cell"><div class="mark" data-index="4"></div></div>
+      <div class="cell"><div class="mark" data-index="5"></div></div>
+      <div class="cell"><div class="mark" data-index="6"></div></div>
+      <div class="cell"><div class="mark" data-index="7"></div></div>
+      <div class="cell"><div class="mark" data-index="8"></div></div>
+    </div>
+
+    <footer>
+      <div class="score-container">
+        <div class="player" data-player="0">
+          <div class="score-icon">x</div>
+          <span class="score-name">Player 1</span>
+          <div class="score">0</div>
+        </div>
+        <div class="player" data-player="1">
+          <div class="score-icon">o</div>
+          <span class="score-name">Player 2</span>
+          <div class="score">0</div>
+        </div>
+      </div>
+    </footer>
   </body>
 
   <script src='./script.js'></script>
