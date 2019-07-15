@@ -1,8 +1,14 @@
-// Game Logic
+/*================
+      Game Logic
+  ================*/
 const cells = document.querySelectorAll('.cell');
 const marks = document.querySelectorAll('.mark');
 const playersObj = [ document.querySelector('[data-player="0"]'),
                   document.querySelector('[data-player="1"]')];
+
+const Player = (name, mark, score) => {
+  return {name, mark, score}
+}
 
 const gameBoard = (() => {
   const board = ['','','','','','','','',''];
@@ -44,9 +50,6 @@ const gameBoard = (() => {
 })();
 
 const gameControl = (() => {
-  /*================
-      Game Logic
-  ================*/
   let gameRunning = false;
   let currentPlayer = 0;
   let resultMessage = '';
@@ -62,7 +65,37 @@ const gameControl = (() => {
     [2, 4, 6]
   ];
 
-  const checkWinner = () => {
+  // Public
+  const startGame = () => {
+    gameRunning = true;
+    createNewPlayers();
+    resetGame();
+  };
+
+  const restartGame = () => {
+    gameRunning = true;
+    resetGame();
+  }
+
+  const makeMove = (e) => {
+    const index = e.target.dataset.index;
+    if (!gameRunning || gameBoard.get(index)) { return; }
+
+    gameBoard.set(index, players[currentPlayer].mark);
+    gameBoard.render();
+
+    if (checkGameOver()) {
+      gameRunning = false;
+      updateScore();
+      displayResult();
+    }
+    else {
+      switchPlayer();
+    }
+  };
+
+  // Private
+  function checkWinner() {
     let result = false;
     winning.forEach((cells) => {
       if (gameBoard.get(cells[0]) == gameBoard.get(cells[1]) && 
@@ -73,9 +106,9 @@ const gameControl = (() => {
       };
     });
     return result;
-  };
+  }
 
-  const checkTie = () => {
+  function checkTie() {
     const length = gameBoard.length();
     for (let i = 0; i < length; i++) {
       if (!gameBoard.get(i)) {
@@ -85,7 +118,7 @@ const gameControl = (() => {
     return true;
   }
 
-  const checkGameOver = () => {
+  function checkGameOver() {
     if (checkWinner()) {
       resultMessage = `${players[currentPlayer].name} wins!`;
       players[currentPlayer].score += 1;
@@ -100,81 +133,46 @@ const gameControl = (() => {
     }
   }
 
-  const displayResult = () => {
-    resultMessageObj.innerHTML = resultMessage;
-    openResult();
-    updateScore();
-    resultMessage = '';
-  };
-
-  const makeMove = (e) => {
-    if (!gameRunning) { return; }
-
-    // check if cell is filled before marking
-    const index = e.target.dataset.index;
-    if (gameBoard.get(index)) {
-      return;
-    }
-    else {
-      gameBoard.set(index, players[currentPlayer].mark);
-      gameBoard.render();
-    }
-
-    if (checkGameOver()) {
-      gameRunning = false;
-      displayResult();
-      return;
-    }
-    else {
-      switchPlayer();
-    }
-  };
-
-  const setCurrentBorder = (num) => {
-    const other = num ? 0 : 1;
-    playersObj[num].classList.add("current");
-    playersObj[other].classList.remove("current");
-  };
-
-  const startGame = () => {
-    gameRunning = true;
+  function createNewPlayers() {
     players[0] = Player(inputs.player1.value, "x", 0);
     players[1] = Player(inputs.player2.value, "o", 0);
+  }
+
+  function resetGame() {
     currentPlayer = 0;
     gameBoard.resetBoard();
     setCurrentBorder(currentPlayer);
     updateScore();
-    closeForm();
-    closeResult();
-  };
-
-  const restartGame = () => {
-    gameRunning = true;
-    currentPlayer = 0;
-    gameBoard.resetBoard();
-    setCurrentBorder(currentPlayer);
     closeForm();
     closeResult();
   }
 
-  const switchPlayer = () => {
+  function switchPlayer() {
     currentPlayer = currentPlayer ? 0 : 1;
     setCurrentBorder(currentPlayer);
-  };
+  }
 
-  const updateScore = () => {
+  function setCurrentBorder(num) {
+    const other = num ? 0 : 1;
+    playersObj[num].classList.add("current");
+    playersObj[other].classList.remove("current");
+  }
+
+  function updateScore() {
     playersObj.forEach((player, i) => {
       player.querySelector('.score-name').innerHTML = players[i].name;
       player.querySelector('.score').innerHTML = players[i].score;
     })
-  };
+  }
+
+  function displayResult() {
+    resultMessageObj.innerHTML = resultMessage;
+    openResult();
+    resultMessage = '';
+  }
 
   return { makeMove, restartGame, startGame };
 })();
-
-const Player = (name, mark, score) => {
-  return {name, mark, score}
-}
 
 // Cells
 cells.forEach((cell) => {
@@ -225,4 +223,5 @@ function closeResult() {
   resultWindow.classList.remove('open');
 }
 
+// initialize
 gameControl.startGame();
